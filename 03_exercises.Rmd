@@ -12,7 +12,7 @@ output:
 
 
 ```{r setup, include=FALSE}
-#knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
+knitr::opts_chunk$set(echo = TRUE, error=TRUE, message=FALSE, warning=FALSE)
 ```
 
 ```{r libraries}
@@ -391,7 +391,7 @@ breed_traits %>%
 
   20. Below, provide a link to your GitHub page with this set of Weekly Exercises. Specifically, if the name of the file is 03_exercises.Rmd, provide a link to the 03_exercises.md file, which is the one that will be most readable on GitHub.
   
-_[My GitHub](https://github.com/wx-zhu/comp_112_hw_3)_
+[My GitHub](https://github.com/wx-zhu/comp_112_hw_3)
 
 ## Challenge problem! 
 
