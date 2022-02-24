@@ -318,7 +318,7 @@ Trips%>%
   geom_point(aes(x = long, y = lat, color = prop))+
   labs(title = "Departures from each station") 
 ```
-
+_I notice that the plot seems to be flipped compared to the plot in Question 15 and the color of proportion changed._
 
   
 **DID YOU REMEMBER TO GO BACK AND CHANGE THIS SET OF EXERCISES TO THE LARGER DATASET? IF NOT, DO THAT NOW.**
@@ -382,16 +382,16 @@ breed_traits %>%
   inner_join(breed_traits_total %>% 
                slice_max(n = 20, order_by = total_rating)) %>%
   ggplot(aes(x = fct_reorder(fct_breed, total_rating), y = `Barking Level`))+ 
-  geom_point() + 
+  geom_point(color = "blue") + 
   labs(title = "Barking level for top 20 ranking dogs",
-       )
-
-  
+       x = "Top 20 ranking dogs")
 ```
   
 ## GitHub link
 
   20. Below, provide a link to your GitHub page with this set of Weekly Exercises. Specifically, if the name of the file is 03_exercises.Rmd, provide a link to the 03_exercises.md file, which is the one that will be most readable on GitHub.
+  
+_[My GitHub](https://github.com/wx-zhu/comp_112_hw_3)_
 
 ## Challenge problem! 
 
