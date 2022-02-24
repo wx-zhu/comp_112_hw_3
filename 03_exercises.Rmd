@@ -22,6 +22,7 @@ library(lubridate)     # for date manipulation
 library(ggthemes)      # for even more plotting themes
 library(geofacet)      # for special faceting with US map layout
 theme_set(theme_minimal())       # My favorite ggplot() theme :)
+library(stringr)
 ```
 
 ```{r data}
@@ -101,7 +102,7 @@ garden_harvest %>%
             by = c("vegetable", "variety")) 
 ```
 
-_It seems that different vegetables share a same variety name and there are NA. I would filter the NA and only join the vegetable from the two datasets and use the variety from only one of the datasets._
+_It seems that there are varieties in both plots so that there would be same variety showing up multiple timesand there are NA. I would filter the NA and only join the vegetable from the two datasets and use the variety from only one of the data sets._
 
 
   3. I would like to understand how much money I "saved" by gardening, for each vegetable type. Describe how I could use the `garden_harvest` and `garden_spending` datasets, along with data from somewhere like [this](https://products.wholefoodsmarket.com/search?sort=relevance&store=10542) to answer this question. You can answer this in words, referencing various join functions. You don't need R code but could provide some if it's helpful.
@@ -317,6 +318,8 @@ Trips%>%
   geom_point(aes(x = long, y = lat, color = prop))+
   labs(title = "Departures from each station") 
 ```
+
+
   
 **DID YOU REMEMBER TO GO BACK AND CHANGE THIS SET OF EXERCISES TO THE LARGER DATASET? IF NOT, DO THAT NOW.**
 
@@ -347,16 +350,43 @@ breed_traits_total %>%
   18. The final product of this exercise will be a graph with the top-20 dogs in total ratings (from previous problem) on the y-axis, year on the x-axis, and points colored by each breed's ranking for that year (from the `breed_rank_all` dataset). The points within each breed will be connected by a line, and the breeds should be arranged from the highest median rank to lowest median rank ("highest" is actually the smallest numer, eg. 1 = best). After you're finished, think of AT LEAST one thing you could you do to make this graph better. HINTS: 1. Start with the `breed_rank_all` dataset and pivot it so year is a variable. 2. Use the `separate()` function to get year alone, and there's an extra argument in that function that can make it numeric. 3. For both datasets used, you'll need to `str_squish()` Breed before joining. 
   
 ```{r}
-breed_traits_total %>%
-  select()
-  
+breed_rank_all %>%
+  left_join(breed_rank_all) %>%
+  pivot_longer(cols = `2013 Rank`:`2020 Rank`,
+               names_to = "year",
+               values_to = "rank") %>%
+  separate(year, 
+           into = c("year"), 
+           convert = TRUE, 
+           extra = "drop") %>% 
+  mutate(breed = str_squish(Breed)) %>%
+  inner_join(breed_traits_total %>% 
+               slice_max(n = 20, order_by = total_rating) %>% 
+               mutate(breed = str_squish(Breed)),
+             by = "breed") %>% 
+  ggplot(aes(x = year,
+             y = fct_rev(fct_reorder(breed, rank, median)))) +
+  geom_line() +
+  geom_point(aes(color = rank)) +
+  labs(title = "Top-20 dogs in total ratings ", 
+       x = "", 
+       y = "")
 ```
   
   19. Create your own! Requirements: use a `join` or `pivot` function (or both, if you'd like), a `str_XXX()` function, and a `fct_XXX()` function to create a graph using any of the dog datasets. One suggestion is to try to improve the graph you created for the Tidy Tuesday assignment. If you want an extra challenge, find a way to use the dog images in the `breed_rank_all` file - check out the `ggimage` library and [this resource](https://wilkelab.org/ggtext/) for putting images as labels.
   
-```{r}
+```{r,fig.height=4, fig.width=7}
 breed_traits %>%
-  left_join(breed_rank_all)
+  mutate(length_med = str_ends(`Coat Length`, "m", negate = TRUE), 
+         fct_breed =  as.factor(Breed))%>%
+  inner_join(breed_traits_total %>% 
+               slice_max(n = 20, order_by = total_rating)) %>%
+  ggplot(aes(x = fct_reorder(fct_breed, total_rating), y = `Barking Level`))+ 
+  geom_point() + 
+  labs(title = "Barking level for top 20 ranking dogs",
+       )
+
+  
 ```
   
 ## GitHub link
